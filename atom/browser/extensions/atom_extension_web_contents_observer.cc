@@ -46,10 +46,10 @@ void AtomExtensionWebContentsObserver::RenderFrameCreated(
   // are allowed to use chrome://resources/ and chrome://theme/ URLs.
   if ((extension->is_extension() || extension->is_platform_app()) &&
       Manifest::IsComponentLocation(extension->location())) {
+    policy->GrantOrigin(
+        process_id, url::Origin::Create(GURL(content::kChromeUIResourcesURL)));
     policy->GrantOrigin(process_id,
-                        url::Origin(GURL(content::kChromeUIResourcesURL)));
-    policy->GrantOrigin(process_id,
-                        url::Origin(GURL(chrome::kChromeUIThemeURL)));
+                        url::Origin::Create(GURL(chrome::kChromeUIThemeURL)));
   }
 
   // Extensions, legacy packaged apps, and component platform apps are allowed
@@ -61,9 +61,10 @@ void AtomExtensionWebContentsObserver::RenderFrameCreated(
       (extension->is_platform_app() &&
        Manifest::IsComponentLocation(extension->location()))) {
     policy->GrantOrigin(process_id,
-                        url::Origin(GURL(chrome::kChromeUIFaviconURL)));
-    policy->GrantOrigin(process_id,
-                        url::Origin(GURL(chrome::kChromeUIExtensionIconURL)));
+                        url::Origin::Create(GURL(chrome::kChromeUIFaviconURL)));
+    policy->GrantOrigin(
+        process_id,
+        url::Origin::Create(GURL(chrome::kChromeUIExtensionIconURL)));
   }
 }
 
