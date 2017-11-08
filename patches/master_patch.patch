@@ -2003,3 +2003,16 @@ index 7ee2fa858b93..b1c96c229077 100644
  }
  
  static void MicrotasksCompletedCallback(v8::Isolate* isolate) {
++diff --git a/content/public/common/content_features.cc b/content/public/common/content_features.cc
++index 66234129de4da98688419d15d432169b7bba5cd4..d03f0d4dfcbeb112a8c931c3f1e2924bbf41f8d7 100644
++--- a/content/public/common/content_features.cc
+++++ b/content/public/common/content_features.cc
++@@ -123,7 +123,7 @@ const base::Feature kGamepadExtensions{"GamepadExtensions",
++ // Causes the implementations of guests (inner WebContents) to use
++ // out-of-process iframes.
++ const base::Feature kGuestViewCrossProcessFrames{
++-    "GuestViewCrossProcessFrames", base::FEATURE_ENABLED_BY_DEFAULT};
+++    "GuestViewCrossProcessFrames", base::FEATURE_DISABLED_BY_DEFAULT};
++
++ // Enables BlinkGC heap compaction.
++ const base::Feature kHeapCompaction{"HeapCompaction",
