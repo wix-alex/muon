@@ -29,6 +29,7 @@
 #include "components/component_updater/component_updater_service.h"
 #include "components/metrics_services_manager/metrics_services_manager.h"
 #include "components/metrics/metrics_pref_names.h"
+#include "components/metrics/metrics_service.h"
 #include "components/password_manager/core/browser/password_manager.h"
 #include "components/prefs/json_pref_store.h"
 #include "components/prefs/pref_filter.h"
@@ -37,6 +38,7 @@
 #include "content/public/browser/child_process_security_policy.h"
 #include "content/public/browser/render_process_host.h"
 #include "content/public/common/content_switches.h"
+#include "content/public/network/url_request_context_builder_mojo.h"
 #include "ppapi/features/features.h"
 #include "ui/base/idle/idle.h"
 #include "ui/base/l10n/l10n_util.h"
@@ -73,6 +75,18 @@
 #include "chrome/browser/download/download_status_updater.h"
 #include "chrome/browser/loader/chrome_resource_dispatcher_host_delegate.h"
 #include "chrome/browser/printing/print_preview_dialog_controller.h"
+
+#include "base/metrics/histogram_macros.h"
+#include "chrome/common/chrome_switches.h"
+#include "components/data_usage/core/data_use_aggregator.h"
+#include "content/public/browser/ignore_errors_cert_verifier.h"
+#include "net/cert/cert_verifier.h"
+#include "net/dns/host_resolver.h"
+#include "net/dns/mapped_host_resolver.h"
+#include "atom/app/atom_content_client.h"
+#if defined(USE_NSS_CERTS)
+#include "net/cert_net/nss_ocsp.h"
+#endif
 
 #if BUILDFLAG(ENABLE_EXTENSIONS)
 #include "atom/browser/extensions/atom_extensions_browser_client.h"
@@ -114,12 +128,118 @@ static constexpr base::TimeDelta kEndSessionTimeout =
     base::TimeDelta::FromSeconds(10);
 #endif
 
+using content::BrowserThread;
 using content::ChildProcessSecurityPolicy;
 using content::PluginService;
+
+namespace {
+
+void UpdateMetricsUsagePrefsOnUIThread(const std::string& service_name,
+                                       int message_size,
+                                       bool is_cellular) {
+  BrowserThread::PostTask(BrowserThread::UI, FROM_HERE,
+                          base::BindOnce(
+                              [](const std::string& service_name,
+                                 int message_size, bool is_cellular) {
+                                // Some unit tests use IOThread but do not
+                                // initialize MetricsService. In that case it's
+                                // fine to skip the update.
+                                auto* metrics_service =
+                                    g_browser_process->metrics_service();
+                                if (metrics_service) {
+                                  metrics_service->UpdateMetricsUsagePrefs(
+                                      service_name, message_size, is_cellular);
+                                }
+                              },
+                              service_name, message_size, is_cellular));
+}
+
+}  // namespace
+
+metrics::UpdateUsagePrefCallbackType BrowserProcessImpl::GetMetricsDataUseForwarder() {
+  return base::Bind(&UpdateMetricsUsagePrefsOnUIThread);
+}
+
+void BrowserProcessImpl::ConstructSystemRequestContext() {
+  // IOThread::Init
+  ChromeNetworkDelegate::InitializePrefsOnUIThread(
+      &system_enable_referrers_,
+      nullptr,
+      nullptr,
+      nullptr,
+      nullptr,
+      local_state());
+
+  std::unique_ptr<content::URLRequestContextBuilderMojo> builder =
+      base::MakeUnique<content::URLRequestContextBuilderMojo>();
+
+  //builder->set_network_quality_estimator(
+  //    globals_->network_quality_estimator.get());
+
+  builder->set_user_agent(atom::GetUserAgent());
+  std::unique_ptr<ChromeNetworkDelegate> chrome_network_delegate(
+      new ChromeNetworkDelegate(extension_event_router_forwarder(),
+                                &system_enable_referrers_));
+  // By default, data usage is considered off the record.
+  chrome_network_delegate->set_data_use_aggregator(
+      data_use_aggregator.get(),
+      true /* is_data_usage_off_the_record */);
+  builder->set_network_delegate(
+      data_use_ascriber_->CreateNetworkDelegate(
+          std::move(chrome_network_delegate), GetMetricsDataUseForwarder()));
+  //builder->set_net_log(net_log_);
+  //std::unique_ptr<net::HostResolver> host_resolver(
+  //    CreateGlobalHostResolver(net_log_));
+
+  //builder->set_ssl_config_service(GetSSLConfigService());
+  //builder->SetHttpAuthHandlerFactory(
+  //    CreateDefaultAuthHandlerFactory(host_resolver.get()));
+
+  //builder->set_host_resolver(std::move(host_resolver));
+
+  std::unique_ptr<net::CertVerifier> cert_verifier;
+  cert_verifier = net::CertVerifier::CreateDefault();
+  const base::CommandLine& command_line =
+      *base::CommandLine::ForCurrentProcess();
+  builder->SetCertVerifier(
+      content::IgnoreErrorsCertVerifier::MaybeWrapCertVerifier(
+          command_line, switches::kUserDataDir, std::move(cert_verifier)));
+  UMA_HISTOGRAM_BOOLEAN(
+      "Net.Certificate.IgnoreCertificateErrorsSPKIListPresent",
+      command_line.HasSwitch(switches::kIgnoreCertificateErrorsSPKIList));
+
+  //std::unique_ptr<net::MultiLogCTVerifier> ct_verifier =
+  //    base::MakeUnique<net::MultiLogCTVerifier>();
+  //// Add built-in logs
+  //ct_verifier->AddLogs(globals_->ct_logs);
+
+  //// Register the ct_tree_tracker_ as observer for verified SCTs.
+  //ct_verifier->SetObserver(ct_tree_tracker_.get());
+
+  //builder->set_ct_verifier(std::move(ct_verifier));
+
+  //SetUpProxyConfigService(builder.get(),
+  //                        std::move(system_proxy_config_service_));
+
+  network_service_ = content::NetworkService::Create();
+  //if (!is_quic_allowed_on_init_)
+  //  network_service_->DisableQuic();
+
+  system_network_context_ =
+      network_service_->CreateNetworkContextWithBuilder(
+          std::move(network_context_request_),
+          std::move(network_context_params_), std::move(builder),
+          &system_request_context_);
+
+#if defined(USE_NSS_CERTS)
+  net::SetURLRequestContextForNSSHttpIO(system_request_context_);
+#endif
+}
 
 BrowserProcessImpl::BrowserProcessImpl(
       base::SequencedTaskRunner* local_state_task_runner,
       const base::CommandLine& command_line) :
+    system_request_context_(nullptr),
     created_watchdog_thread_(false),
     created_browser_policy_connector_(false),
     created_profile_manager_(false),
@@ -149,6 +269,8 @@ BrowserProcessImpl::BrowserProcessImpl(
 #endif
 
   message_center::MessageCenter::Initialize();
+
+  ConstructSystemRequestContext();
 }
 
 BrowserProcessImpl::~BrowserProcessImpl() {
@@ -461,8 +583,8 @@ metrics::MetricsService* BrowserProcessImpl::metrics_service() {
 }
 
 net::URLRequestContextGetter* BrowserProcessImpl::system_request_context() {
-  NOTIMPLEMENTED();
-  return nullptr;
+  DCHECK_CALLED_ON_VALID_SEQUENCE(sequence_checker_);
+  return io_thread()->system_url_request_context_getter();
 }
 
 variations::VariationsService* BrowserProcessImpl::variations_service() {

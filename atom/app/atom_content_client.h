@@ -15,6 +15,8 @@
 
 namespace atom {
 
+std::string GetUserAgent();
+
 class AtomContentClient : public brightray::ContentClient {
  public:
   AtomContentClient();
