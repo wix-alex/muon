@@ -1264,7 +1264,9 @@ void WebContents::MediaStartedPlaying(const MediaPlayerInfo& media_info,
 }
 
 void WebContents::MediaStoppedPlaying(const MediaPlayerInfo& media_info,
-                                      const MediaPlayerId& id) {
+                                      const MediaPlayerId& id,
+                                      WebContentsObserver::MediaStoppedReason
+                                      reason) {
   Emit("media-paused");
 }
 
