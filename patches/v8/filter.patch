@@ -1,5 +1,5 @@
 diff --git a/BUILD.gn b/BUILD.gn
-index 49707659723ca26ce786c6b04e20fac78bed2405..e20529b98a73a6e8087a51acfe43774fde156b10 100644
+index 7168ea2da541ef11090155c04ed05e5ddf351f55..94034ffbce1aba43c4ac3af6cf3414ffe4b375b8 100644
 --- a/BUILD.gn
 +++ b/BUILD.gn
 @@ -179,7 +179,13 @@ config("internal_config") {
@@ -18,10 +18,10 @@ index 49707659723ca26ce786c6b04e20fac78bed2405..e20529b98a73a6e8087a51acfe43774f
    }
  }
 diff --git a/src/profiler/profiler-listener.cc b/src/profiler/profiler-listener.cc
-index bd2f158e6072386ba8e16c5aa50482d9379b663f..657b99f1e05c204df518e54d0a2f7296e3858368 100644
+index 4609f4a3f4df039037883e63365f47225c95851c..56a191189e4a3c4b0b8ac2fff9c0735b02b23213 100644
 --- a/src/profiler/profiler-listener.cc
 +++ b/src/profiler/profiler-listener.cc
-@@ -96,7 +96,7 @@ void ProfilerListener::CodeCreateEvent(CodeEventListener::LogEventsAndTags tag,
+@@ -97,7 +97,7 @@ void ProfilerListener::CodeCreateEvent(CodeEventListener::LogEventsAndTags tag,
        int position = it.source_position().ScriptOffset();
        int line_number = script->GetLineNumber(position) + 1;
        int pc_offset = it.code_offset() + offset;
