@@ -12,7 +12,7 @@
 #include "base/time/time.h"
 #include "brave/utility/importer/brave_profile_import_service.h"
 #include "chrome/common/importer/profile_import.mojom.h"
-#include "chrome/common/resource_usage_reporter.mojom.h"
+#include "content/public/common/resource_usage_reporter.mojom.h"
 #include "chrome/utility/extensions/extensions_handler.h"
 #include "chrome/utility/utility_message_handler.h"
 #include "content/public/common/content_switches.h"
