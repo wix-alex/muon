@@ -60,17 +60,21 @@ void OnMessageInternal(const std::pair<uint8_t*, size_t>& buf) {
 }  // namespace
 
 WorkerBindings::WorkerBindings(extensions::ScriptContext* context,
-                                V8WorkerThread* worker)
+                               V8WorkerThread* worker)
     : extensions::ObjectBackedNativeHandler(context),
       worker_(worker),
-      weak_ptr_factory_(this) {
-  RouteFunction("postMessage",
-      base::Bind(&WorkerBindings::PostMessage,
-                 weak_ptr_factory_.GetWeakPtr()));
-  RouteFunction("close",
-      base::Bind(&WorkerBindings::Close, weak_ptr_factory_.GetWeakPtr()));
-  RouteFunction("onerror",
-      base::Bind(&WorkerBindings::OnError, weak_ptr_factory_.GetWeakPtr()));
+      weak_ptr_factory_(this) {}
+
+WorkerBindings::~WorkerBindings() {}
+
+void WorkerBindings::AddRoutes() {
+  RouteHandlerFunction(
+      "postMessage",
+      base::Bind(&WorkerBindings::PostMessage, weak_ptr_factory_.GetWeakPtr()));
+  RouteHandlerFunction("close", base::Bind(&WorkerBindings::Close,
+                                           weak_ptr_factory_.GetWeakPtr()));
+  RouteHandlerFunction("onerror", base::Bind(&WorkerBindings::OnError,
+                                             weak_ptr_factory_.GetWeakPtr()));
 
   v8::Local<v8::Context> v8_context = context->v8_context();
   v8::Isolate* isolate = v8_context->GetIsolate();
@@ -131,9 +135,6 @@ WorkerBindings::WorkerBindings(extensions::ScriptContext* context,
       "onerror",
       "worker",
       "onerror");
-}
-
-WorkerBindings::~WorkerBindings() {
 }
 
 void WorkerBindings::OnErrorOnUIThread(const std::string& message,
