@@ -17,6 +17,7 @@
 #include "base/files/file_util.h"
 #include "base/path_service.h"
 #include "base/strings/utf_string_conversions.h"
+#include "base/task_scheduler/post_task.h"
 #include "brave/browser/brave_javascript_dialog_manager.h"
 #include "chrome/browser/certificate_viewer.h"
 #include "chrome/browser/extensions/api/file_system/file_entry_picker.h"
@@ -127,7 +128,7 @@ base::DictionaryValue* CreateFileSystemValue(const FileSystem& file_system) {
 
 void WriteToFile(const base::FilePath& path,
                  const std::string& content) {
-  DCHECK_CURRENTLY_ON(BrowserThread::FILE);
+  base::AssertBlockingAllowed();
   DCHECK(!path.empty());
 
   base::WriteFile(path, content.data(), content.size());
@@ -135,7 +136,7 @@ void WriteToFile(const base::FilePath& path,
 
 void AppendToFile(const base::FilePath& path,
                   const std::string& content) {
-  DCHECK_CURRENTLY_ON(BrowserThread::FILE);
+  base::ThreadRestrictions::AssertBlockingAllowed();
   DCHECK(!path.empty());
 
   base::AppendToFile(path, content.data(), content.size());
@@ -174,8 +175,9 @@ CommonWebContentsDelegate::CommonWebContentsDelegate()
     : html_fullscreen_(false),
       native_fullscreen_(false),
       devtools_file_system_indexer_(new DevToolsFileSystemIndexer),
-      weak_ptr_factory_(this) {
-}
+      weak_ptr_factory_(this),
+      file_task_runner_(
+          base::CreateSequencedTaskRunnerWithTraits({base::MayBlock()})) {}
 
 CommonWebContentsDelegate::~CommonWebContentsDelegate() {
 }
@@ -333,11 +335,10 @@ void CommonWebContentsDelegate::DevToolsSaveToFile(
   if (it != saved_files_.end() && !save_as) {
     path = it->second;
     saved_files_[url] = path;
-    BrowserThread::PostTaskAndReply(
-      BrowserThread::FILE, FROM_HERE,
-      base::Bind(&WriteToFile, path, content),
-      base::Bind(&CommonWebContentsDelegate::OnDevToolsSaveToFile,
-                 base::Unretained(this), url));
+    file_task_runner_->PostTask(
+        FROM_HERE, base::Bind(&WriteToFile, path, content),
+        base::Bind(&CommonWebContentsDelegate::OnDevToolsSaveToFile,
+                   base::Unretained(this), url));
   } else {
     base::FilePath default_path;
     PathService::Get(chrome::DIR_DEFAULT_DOWNLOADS, &default_path);
@@ -359,9 +360,8 @@ void CommonWebContentsDelegate::DevToolsAppendToFile(
   if (it == saved_files_.end())
     return;
 
-  BrowserThread::PostTaskAndReply(
-      BrowserThread::FILE, FROM_HERE,
-      base::Bind(&AppendToFile, it->second, content),
+  file_task_runner_->PostTask(
+      FROM_HERE, base::Bind(&AppendToFile, it->second, content),
       base::Bind(&CommonWebContentsDelegate::OnDevToolsAppendToFile,
                  base::Unretained(this), url));
 }
