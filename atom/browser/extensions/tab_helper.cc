@@ -381,8 +381,8 @@ void TabHelper::SetActive(bool active) {
   }
 }
 
-void TabHelper::WasShown() {
-  if (discarded_) {
+void TabHelper::OnVisibilityChanged(content::Visibility visibility) {
+  if (visibility == content::Visibility::VISIBLE && discarded_) {
     // load the tab if it is shown without being activate (tab preview)
     discarded_ = false;
     SetAutoDiscardable(true);
