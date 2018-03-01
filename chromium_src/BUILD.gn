@@ -145,11 +145,11 @@ source_set("browser") {
     ":history",
     ":metrics",
     ":password_manager",
+    ":safe_browsing",
     ":sessions",
     ":web_data",
     "//electron/brave/browser:tab_manager",
     "//base",
-    "//chrome/browser/safe_browsing",
     "//chrome/common",
     "//chrome/common:service_process_mojom",
     "//chrome/utility",
@@ -331,8 +331,6 @@ source_set("browser") {
     "//chrome/browser/ssl/captive_portal_metrics_recorder.h",
     "//chrome/browser/ssl/security_state_tab_helper.cc",
     "//chrome/browser/ssl/security_state_tab_helper.h",
-    "//chrome/browser/sync/user_event_service_factory.cc",
-    "//chrome/browser/sync/user_event_service_factory.h",
     "//chrome/browser/tab_contents/tab_util.cc",
     "//chrome/browser/tab_contents/tab_util.h",
     "//chrome/browser/win/chrome_process_finder.cc",
@@ -643,6 +641,15 @@ source_set("browser") {
   }
 }
 
+source_set("safe_browsing") {
+  sources = [
+    "chromium_src/chrome/browser/signin/signin_manager_factory.h",
+  ]
+  deps = [
+    "//chrome/browser/safe_browsing"
+  ]
+}
+
 source_set("crashes_ui") {
   configs += [ "//electron/build:electron_config" ]
   configs += [ ":chromium_src_config" ]
@@ -793,6 +800,8 @@ source_set("sync") {
   configs += [ ":chromium_src_config" ]
 
   sources = [
+    "//chrome/browser/sync/user_event_service_factory.cc",
+    "//chrome/browser/sync/user_event_service_factory.h",
     "chrome/browser/sync/glue/sync_start_util.cc",
     "chrome/browser/sync/profile_sync_service_factory.cc"
   ]

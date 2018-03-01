@@ -566,20 +566,6 @@ index d85ddf9db90d332a31f839e7600b8d6e5ec61356..2dbe745b19001ce55631e625b6c597b2
    // Finds TabStripModel which has a WebContents whose id is the given
    // |tab_id|, and returns the WebContents index and the TabStripModel.
    int FindTabStripModelById(int32_t tab_id, TabStripModel** model) const;
-diff --git a/chrome/browser/safe_browsing/chrome_password_protection_service.cc b/chrome/browser/safe_browsing/chrome_password_protection_service.cc
-index 4275342f9244aa005521882c23767662fa2a681c..de4b9e02182dd4ed34e248d993c2a5f1e480d020 100644
---- a/chrome/browser/safe_browsing/chrome_password_protection_service.cc
-+++ b/chrome/browser/safe_browsing/chrome_password_protection_service.cc
-@@ -672,8 +672,7 @@ bool ChromePasswordProtectionService::UserClickedThroughSBInterstitial(
- }
- 
- AccountInfo ChromePasswordProtectionService::GetAccountInfo() {
--  SigninManagerBase* signin_manager =
--      SigninManagerFactory::GetForProfileIfExists(profile_);
-+  SigninManagerBase* signin_manager = nullptr;
- 
-   return signin_manager ? signin_manager->GetAuthenticatedAccountInfo()
-                         : AccountInfo();
 diff --git a/chrome/browser/safe_browsing/chrome_password_protection_service.h b/chrome/browser/safe_browsing/chrome_password_protection_service.h
 index 9f9a34a962f52c4f9a56b1f0bd25ab350c5cdd05..fefa41dac43a699f3c8fe5b9ac2ef4df6496a451 100644
 --- a/chrome/browser/safe_browsing/chrome_password_protection_service.h
@@ -743,7 +729,7 @@ diff --git a/chrome/common/chrome_paths_mac.mm b/chrome/common/chrome_paths_mac.
 index cca3bbb41ae25484c3e87c9aba09a8b07741e2b2..57abbcfd90dab7bbf1b5dffc35b17d3ade1a5e1e 100644
 --- a/chrome/common/chrome_paths_mac.mm
 +++ b/chrome/common/chrome_paths_mac.mm
-@@ -40,7 +40,9 @@ NSBundle* OuterAppBundleInternal() {
+@@ -40,7 +40,9 @@
  
    // From C.app/Contents/Versions/1.2.3.4, go up three steps to get to C.app.
    base::FilePath versioned_dir = chrome::GetVersionedDirectory();
@@ -1195,7 +1181,7 @@ diff --git a/components/crash/content/app/crashpad_mac.mm b/components/crash/con
 index 485c2b4b3e98244f6303c92394dd0f6eab7263c6..5b530d7a32df23537d3b59e03f3729759a937254 100644
 --- a/components/crash/content/app/crashpad_mac.mm
 +++ b/components/crash/content/app/crashpad_mac.mm
-@@ -55,6 +55,8 @@ base::FilePath PlatformCrashpadInitialization(
+@@ -55,6 +55,8 @@
        // Only allow the possibility of report upload in official builds. This
        // crash server won't have symbols for any other build types.
        std::string url = "https://clients2.google.com/cr/report";
@@ -1353,7 +1339,7 @@ index 2b38db266f9aa1f4141c8649c021042ede4e5589..ea0387b11f4b00f87596d738c152aa4c
  #include "base/mac/mac_logging.h"
  #include "base/rand_util.h"
  #include "crypto/apple_keychain.h"
-@@ -61,6 +62,14 @@ const char KeychainPassword::account_name[] = "Chromium";
+@@ -61,6 +62,14 @@
  std::string KeychainPassword::GetPassword() const {
    UInt32 password_length = 0;
    void* password_data = NULL;
@@ -1439,7 +1425,7 @@ diff --git a/content/browser/renderer_host/input/synthetic_gesture_target_mac.mm
 index 83a8792dbe1ee56e7541828861253b2d5d39cc22..52515549ce39704a701847d14143c493ff3c9050 100644
 --- a/content/browser/renderer_host/input/synthetic_gesture_target_mac.mm
 +++ b/content/browser/renderer_host/input/synthetic_gesture_target_mac.mm
-@@ -22,7 +22,7 @@
+@@ -22,7 +22,7 @@ @interface SyntheticPinchEvent : NSObject
  // Filled with default values.
  @property(readonly) CGFloat deltaX;
  @property(readonly) CGFloat deltaY;
@@ -1482,7 +1468,7 @@ diff --git a/content/browser/renderer_host/render_widget_host_view_mac.mm b/cont
 index 7671defd7a2f2d49c38015dfe52cdb18b9eb1d21..e40f51499af760411b29f65eed5ed0084be660cf 100644
 --- a/content/browser/renderer_host/render_widget_host_view_mac.mm
 +++ b/content/browser/renderer_host/render_widget_host_view_mac.mm
-@@ -140,6 +140,12 @@ RenderWidgetHostView* GetRenderWidgetHostViewToUse(
+@@ -140,6 +140,12 @@ BOOL EventIsReservedBySystem(NSEvent* event) {
  
  }  // namespace
  
@@ -1495,7 +1481,7 @@ index 7671defd7a2f2d49c38015dfe52cdb18b9eb1d21..e40f51499af760411b29f65eed5ed008
  // These are not documented, so use only after checking -respondsToSelector:.
  @interface NSApplication (UndocumentedSpeechMethods)
  - (void)speakString:(NSString*)string;
-@@ -1667,6 +1673,10 @@ void RenderWidgetHostViewMac::SetActive(bool active) {
+@@ -1667,6 +1673,10 @@ new BrowserCompositorMac(this, this, render_widget_host_->is_hidden(),
    if (render_widget_host_) {
      render_widget_host_->SetActive(active);
      if (active) {
@@ -1506,7 +1492,7 @@ index 7671defd7a2f2d49c38015dfe52cdb18b9eb1d21..e40f51499af760411b29f65eed5ed008
        if (HasFocus())
          render_widget_host_->Focus();
      } else {
-@@ -1935,7 +1945,14 @@ void RenderWidgetHostViewMac::OnDisplayMetricsChanged(
+@@ -1935,7 +1945,14 @@ - (BOOL)acceptsMouseEventsWhenInactive {
  }
  
  - (BOOL)acceptsFirstMouse:(NSEvent*)theEvent {
@@ -1521,7 +1507,7 @@ index 7671defd7a2f2d49c38015dfe52cdb18b9eb1d21..e40f51499af760411b29f65eed5ed008
  }
  
  - (void)setCloseOnDeactivate:(BOOL)b {
-@@ -2168,8 +2185,10 @@ void RenderWidgetHostViewMac::OnDisplayMetricsChanged(
+@@ -2168,8 +2185,10 @@ - (void)keyEvent:(NSEvent*)theEvent wasKeyEquivalent:(BOOL)equiv {
    if (EventIsReservedBySystem(theEvent))
      return;
  
@@ -1532,7 +1518,7 @@ index 7671defd7a2f2d49c38015dfe52cdb18b9eb1d21..e40f51499af760411b29f65eed5ed008
  
    if ([theEvent type] == NSFlagsChanged) {
      // Ignore NSFlagsChanged events from the NumLock and Fn keys as
-@@ -3034,6 +3053,11 @@ void RenderWidgetHostViewMac::OnDisplayMetricsChanged(
+@@ -3034,6 +3053,11 @@ - (RenderWidgetHostViewMac*)renderWidgetHostViewMac {
  // move) for the given event. Customize here to be more selective about which
  // key presses to autohide on.
  - (BOOL)shouldAutohideCursorForEvent:(NSEvent*)event {
@@ -1572,7 +1558,7 @@ diff --git a/content/browser/web_contents/web_contents_view_mac.mm b/content/bro
 index 2c5dd9e99e6da2886063b4d4ca86605ca5ff13d3..9bf9e8a762cf3ec28b6d05e6a151a86698d2b7fe 100644
 --- a/content/browser/web_contents/web_contents_view_mac.mm
 +++ b/content/browser/web_contents/web_contents_view_mac.mm
-@@ -614,6 +614,7 @@ void WebContentsViewMac::CloseTab() {
+@@ -614,6 +614,7 @@ - (void)draggedImage:(NSImage*)anImage
               endedAt:(NSPoint)screenPoint
             operation:(NSDragOperation)operation {
    [dragSource_ endDragAt:screenPoint operation:operation];
@@ -1598,7 +1584,7 @@ diff --git a/content/browser/web_contents/web_drag_dest_mac.mm b/content/browser
 index 35c4ee35242ac1e21beb94ae6b844dff14e04580..fdfc3b0ac56774fc5fd6a591ccad052c8cbec0cb 100644
 --- a/content/browser/web_contents/web_drag_dest_mac.mm
 +++ b/content/browser/web_contents/web_drag_dest_mac.mm
-@@ -347,6 +347,12 @@ GetRenderWidgetHostAtPoint:(const NSPoint&)viewPoint
+@@ -347,6 +347,12 @@ - (void)setDragStartTrackersForProcess:(int)processID {
    dragStartViewID_ = GetRenderViewHostID(webContents_->GetRenderViewHost());
  }
  
@@ -1887,18 +1873,18 @@ index 2ef77f4f6359618be7b37d0804a77dd4883dbc06..47f9059b1819810fc4284a9d63aae1d8
  
    proto.attachedCallback = function() {
 diff --git a/google_apis/google_api_keys.cc b/google_apis/google_api_keys.cc
-index 2e8437ed136e682540835ef4738e3519f9cb6051..4ec8bd06b4ee76a398947540c76e2450ed4cdcca 100644
+index 2e8437ed136e682540835ef4738e3519f9cb6051..e9fae5e344bbdeaa6a8348db3ec088f06b3967f6 100644
 --- a/google_apis/google_api_keys.cc
 +++ b/google_apis/google_api_keys.cc
-@@ -28,7 +28,7 @@
- 
- // Used to indicate an unset key/id/secret.  This works better with
- // various unit tests than leaving the token empty.
--#define DUMMY_API_TOKEN "dummytoken"
-+#define DUMMY_API_TOKEN "AIzaSyAH90V94EcZBP5oH7oc-mXQrSKgASVxER8"
+@@ -31,7 +31,7 @@
+ #define DUMMY_API_TOKEN "dummytoken"
  
  #if !defined(GOOGLE_API_KEY)
- #define GOOGLE_API_KEY DUMMY_API_TOKEN
+-#define GOOGLE_API_KEY DUMMY_API_TOKEN
++#define GOOGLE_API_KEY "AIzaSyAH90V94EcZBP5oH7oc-mXQrSKgASVxER8"
+ #endif
+ 
+ #if !defined(GOOGLE_CLIENT_ID_MAIN)
 diff --git a/media/base/media_switches.cc b/media/base/media_switches.cc
 index c921e6f316ee9a00c6b48270f84167c22deb8ce6..36d51e77b2ca10d45fe44636b9820f747a2edf60 100644
 --- a/media/base/media_switches.cc
