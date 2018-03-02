@@ -1492,7 +1492,7 @@ index 7671defd7a2f2d49c38015dfe52cdb18b9eb1d21..e40f51499af760411b29f65eed5ed008
        if (HasFocus())
          render_widget_host_->Focus();
      } else {
-@@ -1935,7 +1945,14 @@ void RenderWidgetHostViewMac::OnDisplayMetricsChanged( {
+@@ -1935,7 +1945,14 @@ void RenderWidgetHostViewMac::OnDisplayMetricsChanged(
  }
  
  - (BOOL)acceptsFirstMouse:(NSEvent*)theEvent {
@@ -1584,7 +1584,7 @@ diff --git a/content/browser/web_contents/web_drag_dest_mac.mm b/content/browser
 index 35c4ee35242ac1e21beb94ae6b844dff14e04580..fdfc3b0ac56774fc5fd6a591ccad052c8cbec0cb 100644
 --- a/content/browser/web_contents/web_drag_dest_mac.mm
 +++ b/content/browser/web_contents/web_drag_dest_mac.mm
-@@ -347,6 +347,12 @@ GetRenderWidgetHostAtPoint:(const NSPoint&)viewPoint {
+@@ -347,6 +347,12 @@ GetRenderWidgetHostAtPoint:(const NSPoint&)viewPoint
    dragStartViewID_ = GetRenderViewHostID(webContents_->GetRenderViewHost());
  }
  
