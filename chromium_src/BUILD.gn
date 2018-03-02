@@ -103,6 +103,8 @@ source_set("renderer") {
   configs += [ ":chromium_src_config" ]
 
   sources = [
+    "//chrome/browser/renderer_preferences_util.cc",
+    "//chrome/browser/renderer_preferences_util.h",
     "chrome/renderer/content_settings_observer.cc",
     "chrome/renderer/content_settings_observer.h",
   ]
@@ -305,9 +307,6 @@ source_set("browser") {
     "//chrome/browser/content_settings/cookie_settings_factory.h",
     "chrome/browser/content_settings/host_content_settings_map_factory.cc",
     "chrome/browser/content_settings/host_content_settings_map_factory.h",
-
-    "//chrome/browser/renderer_preferences_util.cc",
-    "//chrome/browser/renderer_preferences_util.h",
 
     "//chrome/browser/ssl/security_state_tab_helper.cc",
     "//chrome/browser/ssl/security_state_tab_helper.h",
