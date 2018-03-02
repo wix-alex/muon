@@ -144,7 +144,6 @@ source_set("browser") {
     ":history",
     ":metrics",
     ":password_manager",
-    ":safe_browsing",
     ":sessions",
     ":web_data",
     "chrome/browser/safe_browsing",
@@ -623,15 +622,6 @@ source_set("browser") {
   }
 }
 
-source_set("safe_browsing") {
-  sources = [
-    "chromium_src/chrome/browser/signin/signin_manager_factory.h",
-  ]
-  deps = [
-    "//chrome/browser/safe_browsing"
-  ]
-}
-
 source_set("crashes_ui") {
   configs += [ "//electron/build:electron_config" ]
   configs += [ ":chromium_src_config" ]
@@ -782,7 +772,6 @@ source_set("sync") {
   configs += [ ":chromium_src_config" ]
 
   sources = [
-    "//chrome/browser/sync/user_event_service_factory.cc",
     "//chrome/browser/sync/user_event_service_factory.h",
     "chrome/browser/sync/glue/sync_start_util.cc",
     "chrome/browser/sync/profile_sync_service_factory.cc",
