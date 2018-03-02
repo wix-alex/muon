@@ -59,6 +59,15 @@ const DownloadPathReservationTracker::FilenameConflictAction
 
 }  // namespace
 
+void AtomDownloadManagerDelegate::RequestConfirmation(
+    DownloadItem* download,
+    const base::FilePath& suggested_path,
+    DownloadConfirmationReason reason,
+    const DownloadTargetDeterminerDelegate::ConfirmationCallback& callback) {
+      callback.Run(DownloadConfirmationResult::CONTINUE_WITHOUT_CONFIRMATION,
+                     suggested_path);
+}
+
 bool AtomDownloadManagerDelegate::IsDownloadReadyForCompletion(
     DownloadItem* item,
     const base::Closure& internal_complete_callback) {
@@ -312,6 +321,29 @@ void AtomDownloadManagerDelegate::DetermineLocalPath(
     const DownloadTargetDeterminerDelegate::LocalPathCallback& callback) {
   DCHECK_CURRENTLY_ON(BrowserThread::UI);
   callback.Run(virtual_path);
+}
+
+void AtomDownloadManagerDelegate::NotifyExtensions(
+    DownloadItem* download,
+    const base::FilePath& virtual_path,
+    const NotifyExtensionsCallback& callback) {
+  DCHECK_CURRENTLY_ON(BrowserThread::UI);
+  DCHECK(!download->IsTransient());
+  callback.Run(base::FilePath(), DownloadPathReservationTracker::UNIQUIFY);
+}
+
+std::string GetMimeType(const base::FilePath& path) {
+  std::string mime_type;
+  net::GetMimeTypeFromFile(path, &mime_type);
+  return mime_type;
+}
+
+void AtomDownloadManagerDelegate::GetFileMimeType(
+    const base::FilePath& path,
+    const GetFileMimeTypeCallback& callback) {
+  DCHECK_CURRENTLY_ON(BrowserThread::UI);
+  base::PostTaskWithTraitsAndReplyWithResult(
+      FROM_HERE, {base::MayBlock()}, base::Bind(&GetMimeType, path), callback);
 }
 
 void AtomDownloadManagerDelegate::OnDownloadTargetDetermined(

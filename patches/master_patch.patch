@@ -163,52 +163,18 @@ index e2faffbfcb27da0329d3e388fea8758d49139e8e..d8cdceffbc4b048395957dcae935a4c4
            "translate::mojom::ContentTranslateDriver"
          ],
 diff --git a/chrome/browser/download/download_target_determiner.cc b/chrome/browser/download/download_target_determiner.cc
-index 4f4dadd98fd997e9659d10e6989916dbb0bb899e..154fda998fc09854da13fef567fa43c5410efe40 100644
+index 4f4dadd98fd997e9659d10e6989916dbb0bb899e..06f1bad7f94378a78c22402f3b93317cca160ec8 100644
 --- a/chrome/browser/download/download_target_determiner.cc
 +++ b/chrome/browser/download/download_target_determiner.cc
-@@ -112,6 +112,9 @@ DownloadTargetDeterminer::DownloadTargetDeterminer(
-   DCHECK_CURRENTLY_ON(BrowserThread::UI);
-   DCHECK(download_);
-   DCHECK(delegate);
-+#if !defined(MUON_CHROMIUM_BUILD)
-+  next_state_ = STATE_CHECK_DOWNLOAD_URL;
-+#endif
-   download_->AddObserver(this);
- 
-   DoLoop();
-@@ -328,6 +331,9 @@ DownloadTargetDeterminer::Result
-   DCHECK(!virtual_path_.empty());
- 
-   next_state_ = STATE_PROMPT_USER_FOR_DOWNLOAD_PATH;
-+#if !defined(MUON_CHROMIUM_BUILD)
-+  next_state_ = STATE_DETERMINE_LOCAL_PATH;
-+#endif
-   if (download_->GetState() != DownloadItem::IN_PROGRESS)
-     return CONTINUE;
- 
-@@ -450,6 +456,9 @@ DownloadTargetDeterminer::Result
-   DCHECK(local_path_.empty());
- 
-   next_state_ = STATE_DETERMINE_MIME_TYPE;
-+#if !defined(MUON_CHROMIUM_BUILD)
-+  next_state_ = STATE_CHECK_VISITED_REFERRER_BEFORE;
-+#endif
- 
-   delegate_->DetermineLocalPath(
-       download_,
-@@ -650,7 +659,11 @@ DownloadTargetDeterminer::Result
+@@ -650,6 +650,7 @@ DownloadTargetDeterminer::Result
      DownloadTargetDeterminer::DoCheckDownloadUrl() {
    DCHECK_CURRENTLY_ON(BrowserThread::UI);
    DCHECK(!virtual_path_.empty());
 +
    next_state_ = STATE_CHECK_VISITED_REFERRER_BEFORE;
-+#if !defined(MUON_CHROMIUM_BUILD)
-+  next_state_ = STATE_RESERVE_VIRTUAL_PATH;
-+#endif
  
    // If user has validated a dangerous download, don't check.
-   if (danger_type_ == content::DOWNLOAD_DANGER_TYPE_USER_VALIDATED)
-@@ -730,6 +743,7 @@ void DownloadTargetDeterminer::CheckVisitedReferrerBeforeDone(
+@@ -730,6 +731,7 @@ void DownloadTargetDeterminer::CheckVisitedReferrerBeforeDone(
    danger_level_ = GetDangerLevel(
        visited_referrer_before ? VISITED_REFERRER : NO_VISITS_TO_REFERRER);
    if (danger_level_ != DownloadFileType::NOT_DANGEROUS &&

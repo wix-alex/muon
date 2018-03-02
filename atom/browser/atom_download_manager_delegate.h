@@ -12,6 +12,7 @@
 #include "atom/browser/api/atom_api_download_item.h"
 #include "base/memory/weak_ptr.h"
 #include "base/strings/utf_string_conversions.h"
+#include "base/task_scheduler/post_task.h"
 #include "chrome/browser/download/download_path_reservation_tracker.h"
 #include "chrome/browser/download/download_prefs.h"
 #include "chrome/browser/download/download_target_determiner.h"
@@ -61,7 +62,7 @@ class AtomDownloadManagerDelegate : public content::DownloadManagerDelegate,
                             const CheckDownloadUrlCallback& callback) override;
   void NotifyExtensions(content::DownloadItem* download,
                         const base::FilePath& suggested_virtual_path,
-                        const NotifyExtensionsCallback& callback) override {}
+                        const NotifyExtensionsCallback& callback) override;
   void ReserveVirtualPath(
       content::DownloadItem* download,
       const base::FilePath& virtual_path,
@@ -72,13 +73,13 @@ class AtomDownloadManagerDelegate : public content::DownloadManagerDelegate,
   void RequestConfirmation(content::DownloadItem* download,
                            const base::FilePath& suggested_virtual_path,
                            DownloadConfirmationReason reason,
-                           const ConfirmationCallback& callback) override {}
+                           const ConfirmationCallback& callback) override;
   void DetermineLocalPath(content::DownloadItem* download,
                           const base::FilePath& virtual_path,
                           const LocalPathCallback& callback) override;
 
   void GetFileMimeType(const base::FilePath& path,
-                       const GetFileMimeTypeCallback& callback) override {}
+                       const GetFileMimeTypeCallback& callback) override;
 
  private:
     bool IsDownloadReadyForCompletion(
