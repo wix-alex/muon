@@ -43,15 +43,15 @@ namespace atom {
 
 namespace {
 
-class ResourceUsageReporterImpl : public chrome::mojom::ResourceUsageReporter {
+class ResourceUsageReporterImpl : public content::mojom::ResourceUsageReporter {
  public:
   ResourceUsageReporterImpl() {}
   ~ResourceUsageReporterImpl() override {}
 
  private:
   void GetUsageData(const GetUsageDataCallback& callback) override {
-    chrome::mojom::ResourceUsageDataPtr data =
-      chrome::mojom::ResourceUsageData::New();
+    content::mojom::ResourceUsageDataPtr data =
+      content::mojom::ResourceUsageData::New();
     size_t total_heap_size = net::ProxyResolverV8::GetTotalHeapSize();
     if (total_heap_size) {
       data->reports_v8_stats = true;
@@ -63,7 +63,7 @@ class ResourceUsageReporterImpl : public chrome::mojom::ResourceUsageReporter {
 };
 
 void CreateResourceUsageReporter(
-    mojo::InterfaceRequest<chrome::mojom::ResourceUsageReporter> request) {
+    mojo::InterfaceRequest<content::mojom::ResourceUsageReporter> request) {
   mojo::MakeStrongBinding(base::MakeUnique<ResourceUsageReporterImpl>(),
                           std::move(request));
 }
