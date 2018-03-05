@@ -23,11 +23,11 @@ PathBindings::PathBindings(
 PathBindings::~PathBindings() {}
 
 void PathBindings::AddRoutes() {
-  RouteFunction("append",
+  RouteHandlerFunction("append",
                 base::Bind(&PathBindings::Append, base::Unretained(this)));
-  RouteFunction("dirname",
+  RouteHandlerFunction("dirname",
                 base::Bind(&PathBindings::DirName, base::Unretained(this)));
-  RouteFunction("require",
+  RouteHandlerFunction("require",
                 base::Bind(&PathBindings::Require, base::Unretained(this)));
   // TODO(bridiver) - implement require.paths
 }

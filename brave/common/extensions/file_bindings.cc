@@ -46,7 +46,7 @@ FileBindings::FileBindings(extensions::ScriptContext* context)
 FileBindings::~FileBindings() {}
 
 void FileBindings::AddRoutes() {
-  RouteFunction(
+  RouteHandlerFunction(
       "WriteImportantFile",
       base::Bind(&FileBindings::WriteImportantFile, base::Unretained(this)));
 }
