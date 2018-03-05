@@ -11,6 +11,7 @@
 #include "brave/browser/brave_browser_context.h"
 #include "brave/browser/password_manager/brave_password_manager_client.h"
 #include "chrome/browser/browser_process.h"
+#include "chrome/browser/signin/identity_manager_factory.h"
 #include "components/autofill/content/browser/content_autofill_driver.h"
 #include "components/autofill/content/browser/content_autofill_driver_factory.h"
 #include "components/autofill/core/browser/popup_item_ids.h"
@@ -111,6 +112,12 @@ PrefService* AtomAutofillClient::GetPrefs() {
 
 syncer::SyncService* AtomAutofillClient::GetSyncService() {
   return nullptr;
+}
+
+identity::IdentityManager* AtomAutofillClient::GetIdentityManager() {
+  Profile* profile =
+      Profile::FromBrowserContext(web_contents()->GetBrowserContext());
+  return IdentityManagerFactory::GetInstance()->GetForProfile(profile);
 }
 
 IdentityProvider* AtomAutofillClient::GetIdentityProvider() {
