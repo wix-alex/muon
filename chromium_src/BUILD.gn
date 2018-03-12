@@ -624,6 +624,9 @@ source_set("browser") {
 }
 
 source_set("permissions") {
+  configs += [ "//electron/build:electron_config" ]
+  configs += [ ":chromium_src_config" ]
+
   sources = [
     "chrome/browser/permissions/permission_uma_util.cc",
     "//chrome/browser/permissions/permission_uma_util.h",
