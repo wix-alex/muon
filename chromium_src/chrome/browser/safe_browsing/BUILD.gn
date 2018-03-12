@@ -1,3 +1,26 @@
+source_set("install_verification") {
+  sources = [
+    "//chrome/browser/install_verification/win/install_verification.cc",
+    "//chrome/browser/install_verification/win/install_verification.h",
+    "//chrome/browser/install_verification/win/loaded_module_verification.cc",
+    "//chrome/browser/install_verification/win/loaded_module_verification.h",
+    "//chrome/browser/install_verification/win/module_ids.cc",
+    "//chrome/browser/install_verification/win/module_ids.h",
+    "//chrome/browser/install_verification/win/module_info.h",
+    "//chrome/browser/install_verification/win/module_list.cc",
+    "//chrome/browser/install_verification/win/module_list.h",
+    "//chrome/browser/install_verification/win/module_verification_common.cc",
+    "//chrome/browser/install_verification/win/module_verification_common.h",
+  ]
+}
+
+source_set("net") {
+  sources = [
+    "//chrome/browser/net/service_providers_win.cc",
+    "//chrome/browser/net/service_providers_win.h",
+  ]
+}
+
 source_set("safe_browsing") {
   configs += [ "//electron/build:electron_config" ]
   configs += [ "//electron/chromium_src:chromium_src_config" ]
@@ -12,9 +35,10 @@ source_set("safe_browsing") {
   ]
 
   deps = [
+    ":install_verification",
+    ":net",
     "//electron/chromium_src/chrome/browser/interstitials",
     "//electron/chromium_src/chrome/browser/prerender",
     "//electron/chromium_src/chrome/browser/signin",
   ]
 }
-

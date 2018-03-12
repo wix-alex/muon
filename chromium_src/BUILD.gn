@@ -146,6 +146,7 @@ source_set("browser") {
     ":history",
     ":metrics",
     ":password_manager",
+    ":permissions",
     ":sessions",
     ":web_data",
     "chrome/browser/safe_browsing",
@@ -265,7 +266,8 @@ source_set("browser") {
     "chrome/browser/ui/chrome_select_file_policy.cc",
     "//chrome/browser/ui/cocoa/ui_localizer.h",
     "//chrome/browser/ui/cocoa/ui_localizer.mm",
-
+    "//chrome/browser/ui/pdf/adobe_reader_info_win.cc",
+    "//chrome/browser/ui/pdf/adobe_reader_info_win.h",
     "chrome/browser/ui/profile_error_dialog.cc",
 
     "//chrome/browser/ui/web_contents_sizer.cc",
@@ -621,6 +623,13 @@ source_set("browser") {
   }
 }
 
+source_set("permissions") {
+  sources = [
+    "chrome/browser/permissions/permission_uma_util.cc",
+    "//chrome/browser/permissions/permission_uma_util.h",
+  ]
+}
+
 source_set("crashes_ui") {
   configs += [ "//electron/build:electron_config" ]
   configs += [ ":chromium_src_config" ]
@@ -884,8 +893,16 @@ source_set("downloads") {
     "//chrome/browser/background_fetch/background_fetch_delegate_impl.h",
     "//chrome/browser/background_fetch/background_fetch_download_client.cc",
     "//chrome/browser/background_fetch/background_fetch_download_client.h",
+    "chrome/browser/download/chrome_download_manager_delegate.cc",
+    "//chrome/browser/download/chrome_download_manager_delegate.h",
+    "chrome/browser/download/download_commands.cc",
+    "//chrome/browser/download/download_commands.h",
     "chrome/browser/download/download_core_service.cc",
     "//chrome/browser/download/download_core_service.h",
+    "chrome/browser/download/download_core_service_factory.cc",
+    "//chrome/browser/download/download_core_service_factory.h",
+    "chrome/browser/download/download_history.cc",
+    "//chrome/browser/download/download_history.h",
     "//chrome/browser/download/download_path_reservation_tracker.cc",
     "//chrome/browser/download/download_path_reservation_tracker.h",
     "chrome/browser/download/download_request_limiter.cc",
@@ -908,6 +925,9 @@ source_set("downloads") {
     "//chrome/browser/download/download_target_determiner.h",
     "//chrome/browser/download/download_target_info.cc",
     "//chrome/browser/download/download_target_info.h",
+    "//chrome/browser/download/trusted_sources_manager.cc",
+    "//chrome/browser/download/trusted_sources_manager.h",
+    "//chrome/browser/download/trusted_sources_manager_win.cc",
   ]
 
   deps = [
@@ -1110,6 +1130,8 @@ source_set("tab_manager") {
     "//chrome/browser/memory_details_win.cc",
     "//chrome/browser/ui/browser_tab_strip_tracker.cc",
     "//chrome/browser/ui/browser_tab_strip_tracker.h",
+    "chrome/browser/ui/page_info/page_info_ui.cc",
+    "//chrome/browser/ui/page_info/page_info_ui.h",
     "chrome/browser/ui/tab_contents/core_tab_helper.cc",
     "//chrome/browser/ui/tab_contents/core_tab_helper.h",
     "//chrome/browser/ui/tabs/tab_strip_model.cc",
