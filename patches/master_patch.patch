@@ -1825,19 +1825,6 @@ index 2ef77f4f6359618be7b37d0804a77dd4883dbc06..47f9059b1819810fc4284a9d63aae1d8
    };
  
    proto.attachedCallback = function() {
-diff --git a/google_apis/google_api_keys.cc b/google_apis/google_api_keys.cc
-index 2e8437ed136e682540835ef4738e3519f9cb6051..e9fae5e344bbdeaa6a8348db3ec088f06b3967f6 100644
---- a/google_apis/google_api_keys.cc
-+++ b/google_apis/google_api_keys.cc
-@@ -31,7 +31,7 @@
- #define DUMMY_API_TOKEN "dummytoken"
- 
- #if !defined(GOOGLE_API_KEY)
--#define GOOGLE_API_KEY DUMMY_API_TOKEN
-+#define GOOGLE_API_KEY "AIzaSyAH90V94EcZBP5oH7oc-mXQrSKgASVxER8"
- #endif
- 
- #if !defined(GOOGLE_CLIENT_ID_MAIN)
 diff --git a/media/base/media_switches.cc b/media/base/media_switches.cc
 index c921e6f316ee9a00c6b48270f84167c22deb8ce6..36d51e77b2ca10d45fe44636b9820f747a2edf60 100644
 --- a/media/base/media_switches.cc
