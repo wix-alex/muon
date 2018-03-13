@@ -162,18 +162,6 @@ index e2faffbfcb27da0329d3e388fea8758d49139e8e..d8cdceffbc4b048395957dcae935a4c4
            "safe_browsing::mojom::SafeBrowsing",
            "translate::mojom::ContentTranslateDriver"
          ],
-diff --git a/chrome/browser/download/download_target_determiner.cc b/chrome/browser/download/download_target_determiner.cc
-index 4f4dadd98fd997e9659d10e6989916dbb0bb899e..6ac6030c3ae74c8df4a6081f5b38dc338c68d7ac 100644
---- a/chrome/browser/download/download_target_determiner.cc
-+++ b/chrome/browser/download/download_target_determiner.cc
-@@ -650,6 +650,7 @@ DownloadTargetDeterminer::Result
-     DownloadTargetDeterminer::DoCheckDownloadUrl() {
-   DCHECK_CURRENTLY_ON(BrowserThread::UI);
-   DCHECK(!virtual_path_.empty());
-+
-   next_state_ = STATE_CHECK_VISITED_REFERRER_BEFORE;
- 
-   // If user has validated a dangerous download, don't check.
 diff --git a/chrome/browser/importer/external_process_importer_client.h b/chrome/browser/importer/external_process_importer_client.h
 index 864a6951115dda5ed74963f18b35692960397d50..3e1a2b719521ac2c60bae05f94e409bc4c7da022 100644
 --- a/chrome/browser/importer/external_process_importer_client.h
