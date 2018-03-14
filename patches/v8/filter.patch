@@ -1,5 +1,5 @@
 diff --git a/BUILD.gn b/BUILD.gn
-index ac1e45b940b48ec1a5c3cfa1ba4cce6ca22a3ba6..4619d291d38b9dffcebd24592b1665ce789a2a75 100644
+index 72a19b2ca450fa01c1eab14d3baa9a9e90544199..8a129684bf12fc11def5349d5e0f7bd2211cc018 100644
 --- a/BUILD.gn
 +++ b/BUILD.gn
 @@ -183,7 +183,13 @@ config("internal_config") {
