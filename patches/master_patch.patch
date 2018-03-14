@@ -1,5 +1,5 @@
 diff --git a/base/threading/thread_restrictions.h b/base/threading/thread_restrictions.h
-index 7090f2aa792410ea406563f4e2e7da9c6a311e48..416130775ca44cecca2c54150753c6cb27c2de6b 100644
+index e63c406810b4deca5a9770fd196bd50f3a3a4070..14927de39b63a16e28f7c53d64396b2e97124fc9 100644
 --- a/base/threading/thread_restrictions.h
 +++ b/base/threading/thread_restrictions.h
 @@ -34,6 +34,13 @@ class StatisticsProviderImpl;
@@ -98,7 +98,7 @@ index 7fa01dcbe6daf97d1afea6141f34ecce02a9837b..14649ee85015cd199403f4ecabc688f0
        default_output_extension = ".a"
        output_prefix = "lib"
 diff --git a/build/toolchain/win/BUILD.gn b/build/toolchain/win/BUILD.gn
-index e0f6fdfb00b424b59d83d5b9418a675943bb8c34..8f39c77e8908baf67656bb75e42f77491dba0b75 100644
+index 53f767a0bddb274ad6b46098d45c703914f712f6..5b48281c1d944763053f237e618bf688778e269b 100644
 --- a/build/toolchain/win/BUILD.gn
 +++ b/build/toolchain/win/BUILD.gn
 @@ -6,6 +6,7 @@ import("//build/config/clang/clang.gni")
@@ -135,7 +135,7 @@ index fbcf20cd0411d39a99642acf2674bf7de2804608..6b07c8f2e0827d17b97aa1cfeb24d7b7
  
  assert(!is_ios, "Chromium/iOS shouldn't use anything in //chrome")
 diff --git a/chrome/browser/chrome_content_browser_manifest_overlay.json b/chrome/browser/chrome_content_browser_manifest_overlay.json
-index 1547d37b629e115b92c79b36c4ca09f36ef5adf1..944da9e747fbe1e13bf1c877ef6898bb3c89bef8 100644
+index b016c0546d9af6301427a926a050da3bb0c15e59..bfa5786a2dd7376ecfff98a80e5a38359db79668 100644
 --- a/chrome/browser/chrome_content_browser_manifest_overlay.json
 +++ b/chrome/browser/chrome_content_browser_manifest_overlay.json
 @@ -13,7 +13,7 @@
@@ -143,10 +143,10 @@ index 1547d37b629e115b92c79b36c4ca09f36ef5adf1..944da9e747fbe1e13bf1c877ef6898bb
            "metrics::mojom::LeakDetector",
            "mojom::ModuleEventSink",
 -          "rappor::mojom::RapporRecorder",
-+          //"rappor::mojom::RapporRecorder",
++//          "rappor::mojom::RapporRecorder",
            "safe_browsing::mojom::SafeBrowsing",
-           "safe_browsing::mojom::PhishingDetectorClient",
            "translate::mojom::ContentTranslateDriver"
+         ],
 diff --git a/chrome/browser/importer/external_process_importer_client.h b/chrome/browser/importer/external_process_importer_client.h
 index 864a6951115dda5ed74963f18b35692960397d50..3e1a2b719521ac2c60bae05f94e409bc4c7da022 100644
 --- a/chrome/browser/importer/external_process_importer_client.h
@@ -210,7 +210,7 @@ index 2592dea8c30aa5e7b9daf614a63fe964471bab7a..5fede5d8ee00b4b06d437b4272ec19a0
      callback_fn.Run(updated_pref);
  }
 diff --git a/chrome/browser/password_manager/password_store_factory.cc b/chrome/browser/password_manager/password_store_factory.cc
-index 54e54a5a1f922b84746b2f62c900857206257a24..00e706352dd09a0c8a7d5773c966ea2e392c45b3 100644
+index cb8bd43871271083038b0555340d4c328f9b8bae..1b442fbf4dfebfc709e90021bb1600a9fa80c67b 100644
 --- a/chrome/browser/password_manager/password_store_factory.cc
 +++ b/chrome/browser/password_manager/password_store_factory.cc
 @@ -113,8 +113,10 @@ PasswordStoreFactory::PasswordStoreFactory()
@@ -232,7 +232,7 @@ index 54e54a5a1f922b84746b2f62c900857206257a24..00e706352dd09a0c8a7d5773c966ea2e
  #if defined(OS_WIN) || defined(OS_MACOSX) || \
      (defined(OS_LINUX) && !defined(OS_CHROMEOS))
    std::unique_ptr<password_manager::PasswordStoreSigninNotifier> notifier =
-       base::MakeUnique<password_manager::PasswordStoreSigninNotifierImpl>(
+       std::make_unique<password_manager::PasswordStoreSigninNotifierImpl>(
            profile);
    ps->SetPasswordStoreSigninNotifier(std::move(notifier));
 +#endif
@@ -240,7 +240,7 @@ index 54e54a5a1f922b84746b2f62c900857206257a24..00e706352dd09a0c8a7d5773c966ea2e
  
    return ps;
 diff --git a/chrome/browser/printing/print_view_manager_base.cc b/chrome/browser/printing/print_view_manager_base.cc
-index 13db9cdbc7d8420d0d47568a7bfc8db49e3009b3..dae6d6e3d858f036514a21616abf73c9485e5008 100644
+index 8fbcb35a212f16ae6a040ddc0205d2a7b7c9ba95..12a9341a7749989439060cbd79b8f38148b90968 100644
 --- a/chrome/browser/printing/print_view_manager_base.cc
 +++ b/chrome/browser/printing/print_view_manager_base.cc
 @@ -72,13 +72,13 @@ using PrintSettingsCallback =
@@ -421,7 +421,7 @@ index a5ea92f2878459b49f88d4895c7d18f2e157dd6c..9cffca0352713bce12b4035c02612cd7
    }
  
 diff --git a/chrome/browser/resource_coordinator/tab_manager.cc b/chrome/browser/resource_coordinator/tab_manager.cc
-index 45d610d5f106a9a6090d962a6dbc316bb20f8a21..67d329754a6d0468a81085e6a9ae0f0332518c21 100644
+index 7bcce4951f872e0c68f39abbebab736ccc54509f..0b55725bef29558e8a9f98069f99983a091f2daa 100644
 --- a/chrome/browser/resource_coordinator/tab_manager.cc
 +++ b/chrome/browser/resource_coordinator/tab_manager.cc
 @@ -660,7 +660,8 @@ void TabManager::AddTabStats(const BrowserInfo& browser_info,
@@ -498,10 +498,10 @@ index 440fdf8df66efce1b68a0463189986a6a0b0353a..7cc8fb11ecb5e2caa67e4e92d6d4526e
    // |tab_id|, and returns the WebContents index and the TabStripModel.
    int FindTabStripModelById(int32_t tab_id, TabStripModel** model) const;
 diff --git a/chrome/common/BUILD.gn b/chrome/common/BUILD.gn
-index 18df7a4af096fdbaf48da5237516f363e949f7c9..7edeb264836d000e80d8b70ba00489ee01135177 100644
+index 7ca361112ae6553b5d55c0118868b6592466e466..b3cbde0364a0de8e75fe06fdf86a72321078145a 100644
 --- a/chrome/common/BUILD.gn
 +++ b/chrome/common/BUILD.gn
-@@ -500,6 +500,12 @@ static_library("common") {
+@@ -503,6 +503,12 @@ static_library("common") {
      ]
      public_deps += [ "//chrome/common:version_header" ]
    }
@@ -903,7 +903,7 @@ index 1ec9a536a3784808f4bdb948c85c6a169088c347..c28e2377769fd916e1b51b01426d5651
  
  static_library("test_support") {
 diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer/chrome_content_renderer_client.cc
-index 9dcba2b049b28f62e11a86e8695ed945d6abf353..87f4ab790c0fcae5f7a100408903795cce51253f 100644
+index 700886c6ce89c43e05b16f24326ebb81b4614933..ccfe99b7572016f366b84f93a143cd1d078c2e59 100644
 --- a/chrome/renderer/chrome_content_renderer_client.cc
 +++ b/chrome/renderer/chrome_content_renderer_client.cc
 @@ -1511,6 +1511,7 @@ ChromeContentRendererClient::CreateBrowserPluginDelegate(
@@ -923,7 +923,7 @@ index 9dcba2b049b28f62e11a86e8695ed945d6abf353..87f4ab790c0fcae5f7a100408903795c
  void ChromeContentRendererClient::AddImageContextMenuProperties(
      const WebURLResponse& response,
 diff --git a/chrome/renderer/chrome_content_renderer_client.h b/chrome/renderer/chrome_content_renderer_client.h
-index 003012343bc8ac5d6207f5170dbd47831e7f0da8..3967a011bc400b969ae480762c4b83d5ea96a3a9 100644
+index a7d4d8906d5d7c3a9fdbb2939a2008c8e3f7752d..5041ab3c30f1b0679413fa382b7d6503c743d951 100644
 --- a/chrome/renderer/chrome_content_renderer_client.h
 +++ b/chrome/renderer/chrome_content_renderer_client.h
 @@ -193,9 +193,9 @@ class ChromeContentRendererClient
@@ -940,7 +940,7 @@ index 003012343bc8ac5d6207f5170dbd47831e7f0da8..3967a011bc400b969ae480762c4b83d5
        const blink::WebURLResponse& response,
        bool is_image_in_context_a_placeholder_image,
 diff --git a/chrome/renderer/pepper/chrome_renderer_pepper_host_factory.cc b/chrome/renderer/pepper/chrome_renderer_pepper_host_factory.cc
-index 12d432198186daf817c0b903af985b05ce17cda2..ddbfdb1765d6f8505c35a70b9465b99d8245a529 100644
+index 611d2b865e6c0ee90bedca8395c1a884fd5e5698..57c04bb93693b581afa71ed06a39bb3c85a71e02 100644
 --- a/chrome/renderer/pepper/chrome_renderer_pepper_host_factory.cc
 +++ b/chrome/renderer/pepper/chrome_renderer_pepper_host_factory.cc
 @@ -100,11 +100,11 @@ ChromeRendererPepperHostFactory::CreateResourceHost(
@@ -949,14 +949,14 @@ index 12d432198186daf817c0b903af985b05ce17cda2..ddbfdb1765d6f8505c35a70b9465b99d
    // access to the other private interfaces.
 -  switch (message.type()) {
 -    case PpapiHostMsg_UMA_Create::ID: {
--      return base::MakeUnique<PepperUMAHost>(host_, instance, resource);
+-      return std::make_unique<PepperUMAHost>(host_, instance, resource);
 -    }
 -  }
-+  // switch (message.type()) {
-+  //   case PpapiHostMsg_UMA_Create::ID: {
-+  //     return base::MakeUnique<PepperUMAHost>(host_, instance, resource);
-+  //   }
-+  // }
++  //switch (message.type()) {
++  //  case PpapiHostMsg_UMA_Create::ID: {
++  //    return std::make_unique<PepperUMAHost>(host_, instance, resource);
++  //  }
++  //}
  
    return nullptr;
  }
@@ -973,7 +973,7 @@ index 7e05c4e04f8e61b418d373a73bd8901347df4c76..e7e6d9fa5e0d54c7755fe3a38eca6f70
    // Holds strings needed by the external importer because the resource
    // bundle isn't available to the external process.
 diff --git a/chrome/utility/importer/firefox_importer.cc b/chrome/utility/importer/firefox_importer.cc
-index cf98536e46b057d11b76e810e8e4348872855a2d..b243aca10dcc93ec5b7a99d368d0f62024d1d32b 100644
+index 528b73ffb2a3c667f8cfd7ef01b65b34236765a3..7b1c9b38ac9bf2bb8dae76afd50de7ef10b0148d 100644
 --- a/chrome/utility/importer/firefox_importer.cc
 +++ b/chrome/utility/importer/firefox_importer.cc
 @@ -161,14 +161,12 @@ void FirefoxImporter::StartImport(const importer::SourceProfile& source_profile,
@@ -1291,10 +1291,10 @@ index 00864253f7c97b98d1e66eb67e717588523559a1..847d20b9a6eefbd50616e8d746bef19b
      if (delegate_)
        delegate_->PreSandboxStartup();
 diff --git a/content/browser/browser_plugin/browser_plugin_guest.cc b/content/browser/browser_plugin/browser_plugin_guest.cc
-index 5f9ea0bf00662875c269faf01d4ab5f8435f59b7..ebf82f3f25d7df05ac7ba8f098ba2fc44abf11a8 100644
+index 3e1786aa6901be8316e7db490e839a27fb138260..b2cdb1950d5328a82a8690b1f4d01d91a4327477 100644
 --- a/content/browser/browser_plugin/browser_plugin_guest.cc
 +++ b/content/browser/browser_plugin/browser_plugin_guest.cc
-@@ -849,6 +849,8 @@ void BrowserPluginGuest::OnDetach(int browser_plugin_instance_id) {
+@@ -850,6 +850,8 @@ void BrowserPluginGuest::OnDetach(int browser_plugin_instance_id) {
    }
  
    delegate_->DidDetach();
@@ -1330,10 +1330,10 @@ index 36c25c462ad15a7c023f118879aaba556381da66..c0aff85c5d3daa62c3f3f8162d43d06d
  
  @end
 diff --git a/content/browser/renderer_host/render_widget_host_view_aura.cc b/content/browser/renderer_host/render_widget_host_view_aura.cc
-index 3802c8a3cc269352f686fb07576bd59c4cc3a6a5..d883502c722d85b58e5d68c8b097d8a1ae302f5a 100644
+index 087bc630062a762edb1006b0080f037935aa52c7..851cd14cef29bc79e53040181bd04d708390d899 100644
 --- a/content/browser/renderer_host/render_widget_host_view_aura.cc
 +++ b/content/browser/renderer_host/render_widget_host_view_aura.cc
-@@ -1681,8 +1681,23 @@ bool RenderWidgetHostViewAura::TransformPointToLocalCoordSpace(
+@@ -1669,8 +1669,23 @@ bool RenderWidgetHostViewAura::TransformPointToLocalCoordSpace(
        !delegated_frame_host_->TransformPointToLocalCoordSpace(
            point_in_pixels, original_surface, transformed_point))
      return false;
@@ -1360,7 +1360,7 @@ index 3802c8a3cc269352f686fb07576bd59c4cc3a6a5..d883502c722d85b58e5d68c8b097d8a1
  }
  
 diff --git a/content/browser/renderer_host/render_widget_host_view_mac.mm b/content/browser/renderer_host/render_widget_host_view_mac.mm
-index c222bb0341f9420539d031d22041a74761aa1b1a..f74acc889fd512d4e119b9b7f090b9799c4529bd 100644
+index 2fedef58a264a62c5023f61d1270d7735abe758e..f2378b78936ef61f2dcc4e78eb0ef431b8aef458 100644
 --- a/content/browser/renderer_host/render_widget_host_view_mac.mm
 +++ b/content/browser/renderer_host/render_widget_host_view_mac.mm
 @@ -137,6 +137,12 @@ RenderWidgetHostView* GetRenderWidgetHostViewToUse(
@@ -1376,7 +1376,7 @@ index c222bb0341f9420539d031d22041a74761aa1b1a..f74acc889fd512d4e119b9b7f090b979
  // These are not documented, so use only after checking -respondsToSelector:.
  @interface NSApplication (UndocumentedSpeechMethods)
  - (void)speakString:(NSString*)string;
-@@ -1616,6 +1622,10 @@ void RenderWidgetHostViewMac::SetActive(bool active) {
+@@ -1615,6 +1621,10 @@ void RenderWidgetHostViewMac::SetActive(bool active) {
    if (render_widget_host_) {
      render_widget_host_->SetActive(active);
      if (active) {
@@ -1387,7 +1387,7 @@ index c222bb0341f9420539d031d22041a74761aa1b1a..f74acc889fd512d4e119b9b7f090b979
        if (HasFocus())
          render_widget_host_->Focus();
      } else {
-@@ -1886,7 +1896,14 @@ Class GetRenderWidgetHostViewCocoaClassForTesting() {
+@@ -1885,7 +1895,14 @@ Class GetRenderWidgetHostViewCocoaClassForTesting() {
  }
  
  - (BOOL)acceptsFirstMouse:(NSEvent*)theEvent {
@@ -1402,7 +1402,7 @@ index c222bb0341f9420539d031d22041a74761aa1b1a..f74acc889fd512d4e119b9b7f090b979
  }
  
  - (void)setCloseOnDeactivate:(BOOL)b {
-@@ -2119,8 +2136,10 @@ Class GetRenderWidgetHostViewCocoaClassForTesting() {
+@@ -2118,8 +2135,10 @@ Class GetRenderWidgetHostViewCocoaClassForTesting() {
    if (EventIsReservedBySystem(theEvent))
      return;
  
@@ -1413,7 +1413,7 @@ index c222bb0341f9420539d031d22041a74761aa1b1a..f74acc889fd512d4e119b9b7f090b979
  
    if ([theEvent type] == NSFlagsChanged) {
      // Ignore NSFlagsChanged events from the NumLock and Fn keys as
-@@ -2984,6 +3003,11 @@ Class GetRenderWidgetHostViewCocoaClassForTesting() {
+@@ -2983,6 +3002,11 @@ Class GetRenderWidgetHostViewCocoaClassForTesting() {
  // move) for the given event. Customize here to be more selective about which
  // key presses to autohide on.
  - (BOOL)shouldAutohideCursorForEvent:(NSEvent*)event {
@@ -1426,7 +1426,7 @@ index c222bb0341f9420539d031d22041a74761aa1b1a..f74acc889fd512d4e119b9b7f090b979
                ui::TEXT_INPUT_TYPE_NONE &&
            [event type] == NSKeyDown &&
 diff --git a/content/browser/web_contents/web_contents_impl.cc b/content/browser/web_contents/web_contents_impl.cc
-index 5274d1a6a97cdd78f1723d8a0b7e68fc1b3f4078..37f8a7d41e71fb3174d9b666428c068740516e87 100644
+index 018534073da17eab4076e115f98480c1c5c62a53..e6783005c1fe96b4eed923426196f2f49aba0736 100644
 --- a/content/browser/web_contents/web_contents_impl.cc
 +++ b/content/browser/web_contents/web_contents_impl.cc
 @@ -1724,7 +1724,8 @@ void WebContentsImpl::Init(const WebContents::CreateParams& params) {
@@ -1521,7 +1521,7 @@ index 0a6b0176a982782fd1472f607f811dd6c183c3fe..052ca73677cad3b10b494bf2ab823a04
    (*map_type)[key] = value;
    ResetKeyIterator();
 diff --git a/content/public/app/mojo/content_renderer_manifest.json b/content/public/app/mojo/content_renderer_manifest.json
-index c70861415662c35074074842e40a4c681eb2a23d..12220e6ffcdeb632cdedeabd360cf5214b0302ea 100644
+index e8d2800c34367edc70ba29c7077bc1037f7b96df..bea186f8b8eae0e9f210d441a02fe2d62718405e 100644
 --- a/content/public/app/mojo/content_renderer_manifest.json
 +++ b/content/public/app/mojo/content_renderer_manifest.json
 @@ -48,6 +48,7 @@
@@ -1545,10 +1545,10 @@ index e147056305cb07dab8ef001cee0c7c6f420b24ee..e7060c4f1f3b53e2418cdd5478b22fa6
        low_priority_iframes_threshold(net::EFFECTIVE_CONNECTION_TYPE_UNKNOWN) {
    standard_font_family_map[kCommonScript] =
 diff --git a/content/renderer/browser_plugin/browser_plugin.cc b/content/renderer/browser_plugin/browser_plugin.cc
-index d850d93102700dc3b9ede233e98ad5162c5b2842..86ef5f68e5c4778fd966c3d32ad45b21ea590171 100644
+index b2e5854cca18c1b290ac036c3b943f88f93047f8..70934f7f8c8a55af8680160dc722ed8edd4cb647 100644
 --- a/content/renderer/browser_plugin/browser_plugin.cc
 +++ b/content/renderer/browser_plugin/browser_plugin.cc
-@@ -579,8 +579,6 @@ blink::WebInputEventResult BrowserPlugin::HandleInputEvent(
+@@ -591,8 +591,6 @@ blink::WebInputEventResult BrowserPlugin::HandleInputEvent(
  
    if (blink::WebInputEvent::IsGestureEventType(event.GetType())) {
      auto gesture_event = static_cast<const blink::WebGestureEvent&>(event);
@@ -1631,12 +1631,12 @@ index 964cde2efecc21b72e96327dc50f1875aae80c58..858bda41501f8c5098f2801c5fd5d8a7
  // static
  int WebViewGuest::GetOrGenerateRulesRegistryID(
 diff --git a/extensions/common/BUILD.gn b/extensions/common/BUILD.gn
-index bcbd37b5dfaa0764d08d3bfae6e30aea3679827d..18e41676a38edac549297c026a9cfe7d3ab7d082 100644
+index c1cb28cd43ee686296510b3f30e7e8282527a7ad..f44345210d8666bae88627dfcb027e3a4b6561bf 100644
 --- a/extensions/common/BUILD.gn
 +++ b/extensions/common/BUILD.gn
 @@ -297,6 +297,7 @@ if (enable_extensions) {
        "//components/crx_file",
-       "//components/nacl/common:features",
+       "//components/nacl/common:buildflags",
        "//components/url_matcher",
 +      "//content/public/common",
        "//crypto",
@@ -1732,10 +1732,10 @@ index d985c0df7a9cb9543003ac32751f3fc80633248a..02bd6daf7e48de8345ce3be506e02110
  
    proto.attachedCallback = function() {
 diff --git a/media/base/media_switches.cc b/media/base/media_switches.cc
-index 67adad843607a5b0d19302a2140f1e5cca6b946e..e231231f98f87c0e5f5f3d8d766640e6baa939b5 100644
+index 94b9cc352bccb74a6830ac5daea6c94ce693e511..177afce2d683bf7a04051c4c1f3fd56ef95cef32 100644
 --- a/media/base/media_switches.cc
 +++ b/media/base/media_switches.cc
-@@ -359,7 +359,7 @@ std::string GetEffectiveAutoplayPolicy(const base::CommandLine& command_line) {
+@@ -351,7 +351,7 @@ std::string GetEffectiveAutoplayPolicy(const base::CommandLine& command_line) {
      return switches::autoplay::kDocumentUserActivationRequiredPolicy;
  
  // The default value is platform dependent.
@@ -1773,10 +1773,10 @@ index 9361272ce0d539dd4bfa1b66b07cb416fe867b14..2df550bc5c628f9029f44328922dac26
  }
  
 diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_state.cc
-index 85746c842d9e82cdbc436c25c6e93694d0e58b1a..e4b92c87d53c39845d2c291166392d501001490c 100644
+index cd4e9c74a31c648b1944b51613481fb031a2ced7..43b35c2e962f008ed3e32204e715229a860334c3 100644
 --- a/net/http/transport_security_state.cc
 +++ b/net/http/transport_security_state.cc
-@@ -753,6 +753,10 @@ TransportSecurityState::TransportSecurityState()
+@@ -760,6 +760,10 @@ TransportSecurityState::TransportSecurityState()
    enable_static_pins_ = false;
    enable_static_expect_ct_ = false;
  #endif
@@ -1813,10 +1813,10 @@ index 023555bcd3b56fd12c3319096deff07fa9854388..5b75bfaa858cead732a701029f45f549
  
    bool ShouldSelectReplacement() const {
 diff --git a/third_party/WebKit/Source/core/exported/WebViewImpl.cpp b/third_party/WebKit/Source/core/exported/WebViewImpl.cpp
-index b197ab60b78e54e084a8349188e2597a8d459f06..26bb4447883344ab728b2daa1564d7e411a8cb63 100644
+index 494a9bc0f29407192a4c2091eb21b553779a2615..ffd7b3557457beb4833c1520850a4d612393ba5f 100644
 --- a/third_party/WebKit/Source/core/exported/WebViewImpl.cpp
 +++ b/third_party/WebKit/Source/core/exported/WebViewImpl.cpp
-@@ -3235,6 +3235,7 @@ void WebViewImpl::DidCloseContextMenu() {
+@@ -3232,6 +3232,7 @@ void WebViewImpl::DidCloseContextMenu() {
    LocalFrame* frame = page_->GetFocusController().FocusedFrame();
    if (frame)
      frame->Selection().SetCaretBlinkingSuspended(false);
@@ -1825,10 +1825,10 @@ index b197ab60b78e54e084a8349188e2597a8d459f06..26bb4447883344ab728b2daa1564d7e4
  
  void WebViewImpl::HidePopups() {
 diff --git a/third_party/WebKit/Source/core/html/media/AutoplayPolicy.cpp b/third_party/WebKit/Source/core/html/media/AutoplayPolicy.cpp
-index 660253c7407f00fb375ed82a7547ea61f2206708..bddc74cfc4f797ecdb45ac784c963f17129db767 100644
+index c8fb3957f4d0c681e9bd81478da3ded2110f1a6f..89f1953453c036ebeed78199506b9f4d942d6b92 100644
 --- a/third_party/WebKit/Source/core/html/media/AutoplayPolicy.cpp
 +++ b/third_party/WebKit/Source/core/html/media/AutoplayPolicy.cpp
-@@ -319,6 +319,12 @@ bool AutoplayPolicy::IsGestureNeededForPlaybackIfPendingUserGestureIsLocked()
+@@ -323,6 +323,12 @@ bool AutoplayPolicy::IsGestureNeededForPlaybackIfPendingUserGestureIsLocked()
    if (element_->GetLoadType() == WebMediaPlayer::kLoadTypeMediaStream)
      return false;
  
@@ -1841,7 +1841,7 @@ index 660253c7407f00fb375ed82a7547ea61f2206708..bddc74cfc4f797ecdb45ac784c963f17
    // We want to allow muted video to autoplay if:
    // - the flag is enabled;
    // - Data Saver is not enabled;
-@@ -335,6 +341,12 @@ bool AutoplayPolicy::IsGestureNeededForPlaybackIfPendingUserGestureIsLocked()
+@@ -339,6 +345,12 @@ bool AutoplayPolicy::IsGestureNeededForPlaybackIfPendingUserGestureIsLocked()
        IsAutoplayAllowedPerSettings()) {
      return false;
    }
