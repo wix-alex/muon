@@ -37,6 +37,7 @@
 #include "base/task/cancelable_task_tracker.h"
 #include "base/threading/thread_restrictions.h"
 #include "base/threading/thread_task_runner_handle.h"
+#include "base/time/time.h"
 #include "brave/browser/brave_content_browser_client.h"
 #include "brave/browser/brave_permission_manager.h"
 #include "chrome/browser/history/history_service_factory.h"
@@ -56,6 +57,7 @@
 #include "net/dns/host_cache.h"
 #include "net/http/http_auth_handler_factory.h"
 #include "net/http/http_auth_preferences.h"
+#include "net/http/transport_security_state.h"
 #include "net/proxy/proxy_config_service_fixed.h"
 #include "net/proxy/proxy_service.h"
 #include "net/url_request/static_http_user_agent_settings.h"
@@ -416,6 +418,12 @@ void Session::DoCacheAction(const net::CompletionCallback& callback) {
                  callback));
 }
 
+void Session::ClearHSTSData() {
+  auto request_context = request_context_getter_->GetURLRequestContext();
+  request_context->transport_security_state()->
+    DeleteAllDynamicDataSince(base::Time::UnixEpoch());
+}
+
 void Session::ClearStorageData(mate::Arguments* args) {
   // clearStorageData([options, callback])
   ClearStorageDataOptions options;
@@ -637,6 +645,7 @@ void Session::BuildPrototype(v8::Isolate* isolate,
       .SetMethod("getCacheSize", &Session::DoCacheAction<CacheAction::STATS>)
       .SetMethod("clearCache", &Session::DoCacheAction<CacheAction::CLEAR>)
       .SetMethod("clearStorageData", &Session::ClearStorageData)
+      .SetMethod("clearHSTSData", &Session::ClearStorageData)
       .SetMethod("clearHistory", &Session::ClearHistory)
       .SetMethod("flushStorageData", &Session::FlushStorageData)
       .SetMethod("setProxy", &Session::SetProxy)
