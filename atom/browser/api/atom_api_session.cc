@@ -645,7 +645,7 @@ void Session::BuildPrototype(v8::Isolate* isolate,
       .SetMethod("getCacheSize", &Session::DoCacheAction<CacheAction::STATS>)
       .SetMethod("clearCache", &Session::DoCacheAction<CacheAction::CLEAR>)
       .SetMethod("clearStorageData", &Session::ClearStorageData)
-      .SetMethod("clearHSTSData", &Session::ClearStorageData)
+      .SetMethod("clearHSTSData", &Session::ClearHSTSData)
       .SetMethod("clearHistory", &Session::ClearHistory)
       .SetMethod("flushStorageData", &Session::FlushStorageData)
       .SetMethod("setProxy", &Session::SetProxy)
