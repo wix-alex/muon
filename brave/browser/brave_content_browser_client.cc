@@ -86,7 +86,7 @@
 #endif
 
 #if BUILDFLAG(USE_BROWSER_SPELLCHECKER)
-#include "components/spellcheck/browser/spellcheck_message_filter_platform.h"
+#include "components/spellcheck/browser/spell_check_host_impl.h"
 #endif
 
 #if defined(OS_POSIX) && !defined(OS_MACOSX)
@@ -381,10 +381,6 @@ void BraveContentBrowserClient::RenderProcessWillLaunch(
 
   host->AddFilter(new printing::PrintingMessageFilter(id, profile));
   host->AddFilter(new TtsMessageFilter(host->GetBrowserContext()));
-
-#if BUILDFLAG(USE_BROWSER_SPELLCHECKER)
-  host->AddFilter(new SpellCheckMessageFilterPlatform(id));
-#endif
 
 #if BUILDFLAG(ENABLE_EXTENSIONS)
   extensions_part_->RenderProcessWillLaunch(host);

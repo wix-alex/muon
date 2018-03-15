@@ -110,10 +110,8 @@ void BraveContentRendererClient::RenderThreadStarted() {
   }
 
 #if BUILDFLAG(ENABLE_SPELLCHECK)
-  if (!spellcheck_) {
-    spellcheck_.reset(new SpellCheck(this));
-    thread->AddObserver(spellcheck_.get());
-  }
+  if (!spellcheck_)
+    InitSpellCheck();
 #endif
 }
 
