@@ -23,7 +23,6 @@
 #include "content/public/browser/render_frame_host.h"
 #include "content/public/browser/ssl_status.h"
 #include "content/public/common/origin_util.h"
-#include "google_apis/gaia/identity_provider.h"
 #include "native_mate/dictionary.h"
 
 DEFINE_WEB_CONTENTS_USER_DATA_KEY(autofill::AtomAutofillClient);
@@ -118,13 +117,6 @@ identity::IdentityManager* AtomAutofillClient::GetIdentityManager() {
   Profile* profile =
       Profile::FromBrowserContext(web_contents()->GetBrowserContext());
   return IdentityManagerFactory::GetInstance()->GetForProfile(profile);
-}
-
-IdentityProvider* AtomAutofillClient::GetIdentityProvider() {
-  if (!identity_provider_) {
-     identity_provider_.reset(new StubIdentityProvider());
-  }
-  return identity_provider_.get();
 }
 
 ukm::UkmRecorder* AtomAutofillClient::GetUkmRecorder() {
