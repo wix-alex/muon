@@ -120,13 +120,6 @@ identity::IdentityManager* AtomAutofillClient::GetIdentityManager() {
   return IdentityManagerFactory::GetInstance()->GetForProfile(profile);
 }
 
-IdentityProvider* AtomAutofillClient::GetIdentityProvider() {
-  if (!identity_provider_) {
-     identity_provider_.reset(new StubIdentityProvider());
-  }
-  return identity_provider_.get();
-}
-
 ukm::UkmRecorder* AtomAutofillClient::GetUkmRecorder() {
   return ukm::UkmRecorder::Get();
 }
