@@ -21,7 +21,6 @@
 #include "ipc/ipc_channel.h"
 #include "ipc/ipc_message_macros.h"
 #include "mojo/public/cpp/bindings/strong_binding.h"
-#include "printing/features/features.h"
 #include "services/proxy_resolver/proxy_resolver_service.h"
 #include "services/proxy_resolver/public/mojom/proxy_resolver.mojom.h"
 #include "services/service_manager/public/cpp/binder_registry.h"
@@ -32,8 +31,7 @@
 #include "extensions/utility/utility_handler.h"
 #endif
 
-#if BUILDFLAG(ENABLE_PRINT_PREVIEW) || \
-    (BUILDFLAG(ENABLE_BASIC_PRINTING) && defined(OS_WIN))
+#if defined(OS_WIN) && BUILDFLAG(ENABLE_PRINT_PREVIEW)
 #include "chrome/utility/printing_handler.h"
 #endif
 
@@ -41,9 +39,8 @@ namespace atom {
 
 AtomContentUtilityClient::AtomContentUtilityClient()
     : utility_process_running_elevated_(false) {
-#if BUILDFLAG(ENABLE_PRINT_PREVIEW) || \
-    (BUILDFLAG(ENABLE_BASIC_PRINTING) && defined(OS_WIN))
-  handlers_.push_back(base::MakeUnique<printing::PrintingHandler>());
+#if defined(OS_WIN) && BUILDFLAG(ENABLE_PRINT_PREVIEW)
+  printing_handler_ = std::make_unique<printing::PrintingHandler>();
 #endif
 }
 
@@ -79,11 +76,10 @@ bool AtomContentUtilityClient::OnMessageReceived(
   if (utility_process_running_elevated_)
     return false;
 
-  for (const auto& handler : handlers_) {
-    if (handler->OnMessageReceived(message))
+#if defined(OS_WIN) && BUILDFLAG(ENABLE_PRINT_PREVIEW)
+  if (printing_handler_->OnMessageReceived(message))
       return true;
-  }
-
+#endif
   return false;
 }
 
