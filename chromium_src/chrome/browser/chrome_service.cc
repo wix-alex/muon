@@ -8,7 +8,6 @@
 #include "chrome/browser/chrome_browser_main_extra_parts.h"
 #include "chrome/common/constants.mojom.h"
 #include "components/spellcheck/spellcheck_build_features.h"
-#include "components/startup_metric_utils/browser/startup_metric_host_impl.h"
 #include "content/public/browser/browser_thread.h"
 #include "content/public/browser/content_browser_client.h"
 #include "content/public/common/content_client.h"
@@ -32,8 +31,6 @@ class ChromeService::IOThreadContext : public service_manager::Service {
         content::BrowserThread::GetTaskRunnerForThread(
             content::BrowserThread::UI);
 
-    registry_.AddInterface(base::BindRepeating(
-        &startup_metric_utils::StartupMetricHostImpl::Create));
 #if BUILDFLAG(ENABLE_SPELLCHECK)
     registry_with_source_info_.AddInterface(
         base::BindRepeating(&SpellCheckHostChromeImpl::Create), ui_task_runner);
